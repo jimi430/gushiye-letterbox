@@ -1,0 +1,79 @@
+body {
+  background: #f4f6fa;
+  min-height: 100vh;
+  margin: 0;
+  font-family: '思源黑体', '微软雅黑', Arial, sans-serif;
+}
+.mailbox-container {
+  width: 350px;
+  margin: 60px auto 0;
+  background: #fff6fa;
+  border-radius: 18px;
+  box-shadow: 0 6px 20px rgba(120, 90, 110, 0.07);
+  padding: 28px 18px 36px 18px;
+  text-align: center;
+  position: relative;
+}
+#birdImg {
+  display: block;
+  margin: 0 auto 12px auto;
+}
+.btn-row {
+  margin-bottom: 18px;
+}
+button {
+  background: #7fa1e7;
+  color: #fff;
+  font-size: 17px;
+  padding: 8px 24px;
+  border: none;
+  border-radius: 16px;
+  margin: 0 6px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+button:hover {
+  background: #5d7fc9;
+}
+.letter-date {
+  margin-top: 16px;
+  font-weight: bold;
+  font-size: 19px;
+  color: #385078;
+}
+.letter-content {
+  margin: 22px 0 18px 0;
+  font-size: 16.5px;
+  line-height: 1.9;
+  color: #55485e;
+  min-height: 48px;
+}
+#sendArea {
+  margin-top: 10px;
+}
+#myLetter {
+  width: 95%;
+  height: 70px;
+  border: 1px solid #c9d1e7;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  padding: 9px;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+}
+#submitLetterBtn {
+  font-size: 15px;
+  background: #e4b7cf;
+  margin: 0;
+  margin-bottom: 6px;
+}
+.submit-result {
+  color: #7e5e91;
+  font-size: 14.5px;
+  margin-top: 3px;
+}
+@media (max-width: 520px) {
+  .mailbox-container { width: 95vw; min-width: 0; padding: 8vw 3vw 12vw 3vw; }
+  #birdImg { width: 40vw !important; }
+}
