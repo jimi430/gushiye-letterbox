@@ -1,4 +1,4 @@
-// ——五十封信填这里，每行一句，英文引号英文逗号！——
+// 顾时夜的日记池（你直接粘贴自己的那份letters数组）
 const letters = [
   `今日处理了商会账目，又去码头看了新到的货。雪很大，路过银楼时看见一支白玉簪，成色不错，已让人包好。
 你上次说喜欢梨膏糖，明日差人送些过去。
@@ -64,47 +64,49 @@ const letters = [
   `今日与旧友小聚，谈了些陈年往事。众人散去后，独自一人回府。桌上还是你曾收拾的模样，动也未动。
 时常记起你说的话。你总嫌我话少，其实有些话，不知怎么开口。你不在，日子也就一日日过去，没什么大起大落。只是安静下来时，心里难免空落。`
 ];
-  // ... 直到50封
 
-// 随机信件
+// 图片链接
+const mailboxWithBird = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg";
+const mailboxOnly     = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";
+
+// 获取当天日期字符串，格式如 "8月4日"
+function formatDate() {
+  const d = new Date();
+  return `${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+// 随机抽一封信（不和上一封重复）
+let lastIdx = -1;
 function getRandomLetter() {
   let idx = Math.floor(Math.random() * letters.length);
-  // 防止连续两次出现同一封
-  if (window.lastIdx === idx && letters.length > 1) {
+  if (idx === lastIdx && letters.length > 1) {
     idx = (idx + 1) % letters.length;
   }
-  window.lastIdx = idx;
+  lastIdx = idx;
   return letters[idx];
 }
 
-// 日期格式化
-function formatDate(d) {
-  const arr = d.split("-");
-  return `${parseInt(arr[1])}月${parseInt(arr[2])}日`;
-}
-
-// 切换小鸟（简化版）
+// 小鸟切换
 function updateBird(status) {
   const bird = document.getElementById("birdImg");
   if (status === "hasMail") {
-    bird.src = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg";
+    bird.src = mailboxWithBird;
   } else {
-    bird.src = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";
+    bird.src = mailboxOnly;
   }
 }
 
-// 收信
+// “收顾时夜的信”按钮
 document.getElementById("getMailBtn").onclick = function() {
   const letter = getRandomLetter();
-  const today = formatDate(new Date().toISOString().slice(0, 10));
-  document.getElementById("letterDate").innerText = `${today} 顾时夜来信`;
+  document.getElementById("letterDate").innerText = `${formatDate()} 顾时夜来信`;
   document.getElementById("letterContent").innerText = letter;
   document.getElementById("mailArea").style.display = "block";
   document.getElementById("sendArea").style.display = "none";
   updateBird("noMail");
 };
 
-// 写信
+// “写信给顾时夜”按钮
 document.getElementById("sendMailBtn").onclick = function() {
   document.getElementById("mailArea").style.display = "none";
   document.getElementById("sendArea").style.display = "block";
@@ -112,7 +114,7 @@ document.getElementById("sendMailBtn").onclick = function() {
   updateBird("hasMail");
 };
 
-// 投递
+// “投递”按钮
 document.getElementById("submitLetterBtn").onclick = function() {
   const val = document.getElementById("myLetter").value.trim();
   if (!val) {
@@ -121,4 +123,9 @@ document.getElementById("submitLetterBtn").onclick = function() {
   }
   document.getElementById("submitResult").innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
   document.getElementById("myLetter").value = "";
+};
+
+// 页面加载时显示有鸟信箱
+window.onload = function() {
+  updateBird("hasMail");
 };
