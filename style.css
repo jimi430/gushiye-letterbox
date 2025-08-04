@@ -1,91 +1,68 @@
 body {
-  background: #f4f6fa;
+  background: #f7f8fa;
+  font-family: '微软雅黑', 'PingFang SC', Arial, sans-serif;
   min-height: 100vh;
   margin: 0;
-  font-family: '思源黑体', '微软雅黑', Arial, sans-serif;
 }
 .mailbox-container {
-  width: 400px;
-  max-width: 97vw;
+  background: #fff3fa;
+  max-width: 350px;
   margin: 50px auto 0 auto;
-  background: #fff6fa;
-  border-radius: 22px;
-  box-shadow: 0 8px 28px rgba(120, 90, 110, 0.11);
-  padding: 32px 18px 40px 18px;
+  border-radius: 24px;
+  box-shadow: 0 6px 30px 0 rgba(144,89,147,.1);
+  padding: 22px 22px 38px 22px;
   text-align: center;
-  position: relative;
 }
 .mailbox-img {
   display: block;
-  max-width: 330px;
-  width: 100%;
-  margin: 0 auto 26px auto;
+  margin: 0 auto 20px auto;
+  max-width: 230px;
+  width: 90%;
   height: auto;
-  box-shadow: 0 2px 10px 0 rgba(130, 90, 110, 0.03);
+  box-shadow: 0 4px 14px 0 rgba(152,102,156,0.11);
   border-radius: 18px;
-  background: #fff;
+  background: #fff7ff;
 }
 .btn-row {
-  margin-bottom: 22px;
+  margin-bottom: 18px;
 }
-button {
-  background: #7fa1e7;
-  color: #fff;
-  font-size: 18px;
-  padding: 9px 28px;
+.btn-row button {
+  background: #c4d3f7;
+  color: #405a92;
   border: none;
-  border-radius: 18px;
-  margin: 0 10px;
+  border-radius: 12px;
+  font-size: 16px;
+  padding: 7px 22px;
+  margin: 0 6px;
   cursor: pointer;
-  transition: background 0.15s;
-  outline: none;
-  box-shadow: 0 2px 8px rgba(120,120,160,0.05);
+  transition: background .18s;
+  box-shadow: 0 2px 8px 0 rgba(173,141,255,.09);
 }
-button:hover {
-  background: #6380b8;
+.btn-row button:hover {
+  background: #b5d7ef;
+  color: #2a3a5e;
 }
 .letter-date {
+  color: #a97eab;
+  font-size: 16px;
+  margin-bottom: 6px;
   margin-top: 18px;
-  font-weight: bold;
-  font-size: 20px;
-  color: #395088;
 }
 .letter-content {
-  margin: 28px 0 18px 0;
+  color: #3b253b;
   font-size: 17px;
-  line-height: 2;
-  color: #564964;
-  min-height: 48px;
-  white-space: pre-line; /* 关键：自动换行并保留分段！ */
-}
-#sendArea {
-  margin-top: 10px;
-}
-#myLetter {
-  width: 97%;
-  height: 75px;
-  border: 1px solid #c9d1e7;
-  border-radius: 10px;
-  margin-bottom: 13px;
-  padding: 12px;
-  font-size: 16px;
-  resize: none;
-  outline: none;
-  background: #f8f7fa;
-}
-#submitLetterBtn {
-  font-size: 16px;
-  background: #e4b7cf;
-  margin-bottom: 10px;
-}
-.submit-result {
-  color: #7e5e91;
-  font-size: 15px;
+  text-align: left;
+  margin-bottom: 8px;
   margin-top: 5px;
+  line-height: 1.7;
+  white-space: pre-line;
+  padding: 11px 6px;
+  border-radius: 7px;
+  background: #fff9ff;
+  box-shadow: 0 1px 5px 0 rgba(196,130,160,.09);
 }
-@media (max-width: 550px) {
-  .mailbox-container { width: 99vw; min-width: 0; padding: 6vw 1vw 11vw 1vw; }
-  .mailbox-img { max-width: 93vw; }
+#moodArea {
+  margin-top: 18px;
 }
 .mood-title {
   font-size: 17px;
@@ -120,4 +97,37 @@ button:hover {
   color: #ad5c99;
   margin-top: 7px;
   min-height: 20px;
+}
+#myLetter {
+  width: 92%;
+  min-height: 66px;
+  font-size: 15px;
+  border: 1.5px solid #eee;
+  border-radius: 10px;
+  padding: 7px;
+  margin-bottom: 8px;
+  margin-top: 10px;
+  background: #fcfbff;
+  resize: vertical;
+}
+#submitLetterBtn {
+  background: #f4d8f7;
+  color: #8c2b67;
+  border: none;
+  border-radius: 11px;
+  font-size: 15px;
+  padding: 6px 22px;
+  cursor: pointer;
+  margin-top: 5px;
+  margin-bottom: 8px;
+  transition: background .18s;
+}
+#submitLetterBtn:hover {
+  background: #d2b6e6;
+}
+.submit-result {
+  font-size: 15px;
+  color: #b481c0;
+  min-height: 22px;
+  margin-top: 5px;
 }
