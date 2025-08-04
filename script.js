@@ -129,3 +129,37 @@ document.getElementById("submitLetterBtn").onclick = function() {
 window.onload = function() {
   updateBird("hasMail");
 };
+.mood-title {
+  font-size: 17px;
+  color: #496097;
+  margin-bottom: 9px;
+  margin-top: 20px;
+}
+.mood-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.mood-btn {
+  background: #e6f0ff;
+  border: none;
+  border-radius: 13px;
+  font-size: 15px;
+  color: #5578c2;
+  padding: 6px 20px;
+  margin: 2px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.mood-btn:hover, .mood-btn.active {
+  background: #bad1f6;
+  color: #283d62;
+}
+.mood-result {
+  font-size: 15px;
+  color: #ad5c99;
+  margin-top: 7px;
+  min-height: 20px;
+}
