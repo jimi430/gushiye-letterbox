@@ -88,9 +88,9 @@ function formatDate(d) {
 function updateBird(status) {
   const bird = document.getElementById("birdImg");
   if (status === "hasMail") {
-    bird.src = "bird_on_mailbox.png";
+    bird.src = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg";
   } else {
-    bird.src = "mailbox_only.png";
+    bird.src = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";
   }
 }
 
