@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>顾时夜和你的邮箱</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="mailbox-container">
+    <img id="birdImg" src="bird_on_mailbox.png" alt="邮箱小鸟" style="width:200px;">
+    <div class="btn-row">
+      <button id="getMailBtn">收顾时夜的信</button>
+      <button id="sendMailBtn">写信给顾时夜</button>
+    </div>
+    <div id="mailArea" style="display:none;">
+      <div id="letterDate" class="letter-date"></div>
+      <div id="letterContent" class="letter-content"></div>
+      <!-- 可以在这加心情签到区 -->
+    </div>
+    <div id="sendArea" style="display:none;">
+      <textarea id="myLetter" placeholder="写下你想对顾时夜说的话..."></textarea>
+      <button id="submitLetterBtn">投递</button>
+      <div id="submitResult" class="submit-result"></div>
+    </div>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
