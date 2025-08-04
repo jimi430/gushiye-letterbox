@@ -16,8 +16,8 @@ body {
 .mailbox-img {
   display: block;
   margin: 0 auto 20px auto;
-  max-width: 230px;
-  width: 90%;
+  max-width: 270px;
+  width: 95%;
   height: auto;
   box-shadow: 0 4px 14px 0 rgba(152,102,156,0.11);
   border-radius: 18px;
