@@ -129,37 +129,46 @@ document.getElementById("submitLetterBtn").onclick = function() {
 window.onload = function() {
   updateBird("hasMail");
 };
-.mood-title {
-  font-size: 17px;
-  color: #496097;
-  margin-bottom: 9px;
-  margin-top: 20px;
-}
-.mood-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 6px;
-}
-.mood-btn {
-  background: #e6f0ff;
-  border: none;
-  border-radius: 13px;
-  font-size: 15px;
-  color: #5578c2;
-  padding: 6px 20px;
-  margin: 2px;
-  cursor: pointer;
-  transition: background .2s;
-}
-.mood-btn:hover, .mood-btn.active {
-  background: #bad1f6;
-  color: #283d62;
-}
-.mood-result {
-  font-size: 15px;
-  color: #ad5c99;
-  margin-top: 7px;
-  min-height: 20px;
-}
+  document.getElementById("getMailBtn").onclick = function() {
+    const letter = getRandomLetter();
+    document.getElementById("letterDate").innerText = `${formatDate()} 顾时夜来信`;
+    document.getElementById("letterContent").innerText = letter;
+    document.getElementById("mailArea").style.display = "block";
+    document.getElementById("sendArea").style.display = "none";
+    updateBird("noMail");
+    document.getElementById("moodArea").style.display = "block";
+    document.getElementById("moodResult").innerText = "";
+    let moodBtns = document.querySelectorAll('.mood-btn');
+    moodBtns.forEach(btn=>btn.classList.remove('active'));
+  };
+
+  document.getElementById("sendMailBtn").onclick = function() {
+    document.getElementById("mailArea").style.display = "none";
+    document.getElementById("sendArea").style.display = "block";
+    document.getElementById("submitResult").innerText = "";
+    updateBird("hasMail");
+    document.getElementById("moodArea").style.display = "none";
+  };
+
+  document.getElementById("submitLetterBtn").onclick = function() {
+    const val = document.getElementById("myLetter").value.trim();
+    if (!val) {
+      document.getElementById("submitResult").innerText = "信纸还是空的哦～写点什么给顾时夜吧！";
+      return;
+    }
+    document.getElementById("submitResult").innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
+    document.getElementById("myLetter").value = "";
+  };
+
+  // ★★★关键心情按钮绑定★★★
+  document.querySelectorAll('.mood-btn').forEach(function(btn){
+    btn.onclick = function() {
+      document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById("moodResult").innerText = `今天你是「${btn.dataset.mood}」的一天，顾时夜会记住的。`;
+    };
+  });
+
+  // 页面初始加载时
+  updateBird("hasMail");
+};
