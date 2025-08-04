@@ -5,75 +5,85 @@ body {
   font-family: '思源黑体', '微软雅黑', Arial, sans-serif;
 }
 .mailbox-container {
-  width: 350px;
-  margin: 60px auto 0;
+  width: 400px;
+  max-width: 97vw;
+  margin: 50px auto 0 auto;
   background: #fff6fa;
-  border-radius: 18px;
-  box-shadow: 0 6px 20px rgba(120, 90, 110, 0.07);
-  padding: 28px 18px 36px 18px;
+  border-radius: 22px;
+  box-shadow: 0 8px 28px rgba(120, 90, 110, 0.11);
+  padding: 32px 18px 40px 18px;
   text-align: center;
   position: relative;
 }
-#birdImg {
+.mailbox-img {
   display: block;
-  margin: 0 auto 12px auto;
+  max-width: 330px;
+  width: 100%;
+  margin: 0 auto 26px auto;
+  height: auto;
+  box-shadow: 0 2px 10px 0 rgba(130, 90, 110, 0.03);
+  border-radius: 18px;
+  background: #fff;
 }
 .btn-row {
-  margin-bottom: 18px;
+  margin-bottom: 22px;
 }
 button {
   background: #7fa1e7;
   color: #fff;
-  font-size: 17px;
-  padding: 8px 24px;
+  font-size: 18px;
+  padding: 9px 28px;
   border: none;
-  border-radius: 16px;
-  margin: 0 6px;
+  border-radius: 18px;
+  margin: 0 10px;
   cursor: pointer;
   transition: background 0.15s;
+  outline: none;
+  box-shadow: 0 2px 8px rgba(120,120,160,0.05);
 }
 button:hover {
-  background: #5d7fc9;
+  background: #6380b8;
 }
 .letter-date {
-  margin-top: 16px;
+  margin-top: 18px;
   font-weight: bold;
-  font-size: 19px;
-  color: #385078;
+  font-size: 20px;
+  color: #395088;
 }
 .letter-content {
-  margin: 22px 0 18px 0;
-  font-size: 16.5px;
-  line-height: 1.9;
-  color: #55485e;
+  margin: 28px 0 18px 0;
+  font-size: 17px;
+  line-height: 2;
+  color: #564964;
   min-height: 48px;
+  white-space: pre-line; /* 关键：自动换行并保留分段！ */
 }
 #sendArea {
   margin-top: 10px;
 }
 #myLetter {
-  width: 95%;
-  height: 70px;
+  width: 97%;
+  height: 75px;
   border: 1px solid #c9d1e7;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  padding: 9px;
+  border-radius: 10px;
+  margin-bottom: 13px;
+  padding: 12px;
   font-size: 16px;
   resize: none;
   outline: none;
+  background: #f8f7fa;
 }
 #submitLetterBtn {
-  font-size: 15px;
+  font-size: 16px;
   background: #e4b7cf;
-  margin: 0;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 .submit-result {
   color: #7e5e91;
-  font-size: 14.5px;
-  margin-top: 3px;
+  font-size: 15px;
+  margin-top: 5px;
 }
-@media (max-width: 520px) {
-  .mailbox-container { width: 95vw; min-width: 0; padding: 8vw 3vw 12vw 3vw; }
-  #birdImg { width: 40vw !important; }
+@media (max-width: 550px) {
+  .mailbox-container { width: 99vw; min-width: 0; padding: 6vw 1vw 11vw 1vw; }
+  .mailbox-img { max-width: 93vw; }
 }
