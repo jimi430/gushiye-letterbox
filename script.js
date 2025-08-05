@@ -87,16 +87,28 @@ window.onload = function() {
     return `${d.getMonth()+1}月${d.getDate()}日`;
   }
 
-  // 随机抽一封信（不和上一封重复）
-  let lastIdx = -1;
-  function getRandomLetter() {
-    let idx = Math.floor(Math.random() * letters.length);
-    if (idx === lastIdx && letters.length > 1) {
-      idx = (idx + 1) % letters.length;
-    }
-    lastIdx = idx;
-    return letters[idx];
+// 2. 洗牌函数
+function shuffle(arr) {
+  let a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
   }
+  return a;
+}
+
+// 3. 洗牌池与索引
+let shuffledLetters = shuffle(letters);
+let currIdx = 0;
+
+// 4. 随机/顺序不重复获取
+function getRandomLetter() {
+  if (currIdx >= shuffledLetters.length) {
+    shuffledLetters = shuffle(letters);
+    currIdx = 0;
+  }
+  return shuffledLetters[currIdx++];
+}
 
   // 小鸟切换
   function updateBird(status) {
