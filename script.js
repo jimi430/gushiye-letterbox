@@ -154,6 +154,15 @@ function getRandomLetter() {
     }
     document.getElementById("submitResult").innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
     document.getElementById("myLetter").value = "";
+
+      // -------- 新增本地保存代码 --------
+  let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
+  myLetters.push({
+    date: new Date().toISOString(),
+    content: val
+  });
+  localStorage.setItem('myLetters', JSON.stringify(myLetters));
+     // -------- 新增部分到这里结束 --------
   };
 
   // 心情签到
@@ -167,4 +176,17 @@ function getRandomLetter() {
 
   // 页面初始加载时
   updateBird("hasMail");
+};
+
+document.getElementById('showMyLettersBtn').onclick = function() {
+  let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
+  if (myLetters.length === 0) {
+    alert('你还没写过信哦～');
+    return;
+  }
+  let msg = myLetters.map(l => {
+    let d = new Date(l.date);
+    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}：\n${l.content}`;
+  }).join('\n\n——————\n\n');
+  alert(msg);
 };
