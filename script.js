@@ -310,4 +310,22 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
     document.getElementById('moodResult').innerText = reply;
   };
 });
+
+const aiReplies = {
+  开心: ["茶房送了你喜欢的甜点来。和以前一样。", "嗯。继续保持。"],
+  想你: ["刚批完的军报空白处洇了滴墨。", "明日让人送些爱吃的糕点去。"],
+  难过: ["让厨房蒸了些你爱吃的甜点。", "你常看的树开了小花。"],
+  期待: ["嗯。我也期待，期待与你重逢。"],
+  幸福: ["天晴，晒被子该收得早些。", "一切安好，想着你，我便也是幸福的。"]
+};
+
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.onclick = function() {
+    const mood = btn.dataset.mood;
+    const replies = aiReplies[mood] || ['……'];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    document.getElementById('moodResult').textContent = reply;
+  };
+});
+
 <script src="script.js"></script>
