@@ -295,3 +295,12 @@ const aiReplies = {
     "一切安好，想着你，我便也是幸福的。"
   ]
 };
+
+document.querySelectorAll('.mood-btn').forEach(btn => {
+  btn.onclick = function() {
+    const mood = btn.dataset.mood;
+    const replies = aiReplies[mood] || ["嗯。"];
+    const reply = replies[Math.floor(Math.random() * replies.length)];
+    document.getElementById('moodResult').innerText = reply;
+  };
+});
