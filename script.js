@@ -94,50 +94,40 @@ window.onload = function() {
 时常记起你说的话。你总嫌我话少，其实有些话，不知怎么开口。你不在，日子也就一日日过去，没什么大起大落。只是安静下来时，心里难免空落。`
   ];
 
-  // 图片链接
-  const mailboxWithBird = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg";
-  const mailboxOnly     = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";
-
-  // 获取当天日期字符串，格式如 "8月4日"
+  // ————————————信件逻辑————————————
+  // 洗牌函数
+  function shuffle(arr) {
+    let a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+  let shuffledLetters = shuffle(letters);
+  let currIdx = 0;
+  function getRandomLetter() {
+    if (currIdx >= shuffledLetters.length) {
+      shuffledLetters = shuffle(letters);
+      currIdx = 0;
+    }
+    return shuffledLetters[currIdx++];
+  }
   function formatDate() {
     const d = new Date();
     return `${d.getMonth()+1}月${d.getDate()}日`;
   }
 
-// 2. 洗牌函数
-function shuffle(arr) {
-  let a = arr.slice();
-  for (let i = a.length - 1; i > 0; i--) {
-    let j = Math.floor(Math.random() * (i + 1));
-    [a[i], a[j]] = [a[j], a[i]];
-  }
-  return a;
-}
-
-// 3. 洗牌池与索引
-let shuffledLetters = shuffle(letters);
-let currIdx = 0;
-
-// 4. 随机/顺序不重复获取
-function getRandomLetter() {
-  if (currIdx >= shuffledLetters.length) {
-    shuffledLetters = shuffle(letters);
-    currIdx = 0;
-  }
-  return shuffledLetters[currIdx++];
-}
-
-  // 小鸟切换
+  // 图片链接
+  const mailboxWithBird = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg";
+  const mailboxOnly     = "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";
   function updateBird(status) {
     const bird = document.getElementById("birdImg");
-    if (status === "hasMail") {
-      bird.src = mailboxWithBird;
-    } else {
-      bird.src = mailboxOnly;
-    }
+    if (status === "hasMail") bird.src = mailboxWithBird;
+    else bird.src = mailboxOnly;
   }
 
-  // “收顾时夜的信”按钮
+  // ————————————信件按钮————————————
   document.getElementById("getMailBtn").onclick = function() {
     const letter = getRandomLetter();
     document.getElementById("letterDate").innerText = `${formatDate()} 顾时夜来信`;
@@ -145,24 +135,17 @@ function getRandomLetter() {
     document.getElementById("mailArea").style.display = "block";
     document.getElementById("sendArea").style.display = "none";
     updateBird("noMail");
-    // 心情签到区显示&初始化
     document.getElementById("moodArea").style.display = "block";
     document.getElementById("moodResult").innerText = "";
-    let moodBtns = document.querySelectorAll('.mood-btn');
-    moodBtns.forEach(btn=>btn.classList.remove('active'));
+    document.querySelectorAll('.mood-btn').forEach(btn=>btn.classList.remove('active'));
   };
-
-  // “写信给顾时夜”按钮
   document.getElementById("sendMailBtn").onclick = function() {
     document.getElementById("mailArea").style.display = "none";
     document.getElementById("sendArea").style.display = "block";
     document.getElementById("submitResult").innerText = "";
     updateBird("hasMail");
-    // 写信时不显示心情签到
     document.getElementById("moodArea").style.display = "none";
   };
-
-  // “投递”按钮
   document.getElementById("submitLetterBtn").onclick = function() {
     const val = document.getElementById("myLetter").value.trim();
     if (!val) {
@@ -171,135 +154,114 @@ function getRandomLetter() {
     }
     document.getElementById("submitResult").innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
     document.getElementById("myLetter").value = "";
-
-      // -------- 新增本地保存代码 --------
-  let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
-  myLetters.push({
-    date: new Date().toISOString(),
-    content: val
-  });
-  localStorage.setItem('myLetters', JSON.stringify(myLetters));
-     // -------- 新增部分到这里结束 --------
+    // 保存到本地
+    let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
+    myLetters.push({ date: new Date().toISOString(), content: val });
+    localStorage.setItem('myLetters', JSON.stringify(myLetters));
+  };
+  document.getElementById('showMyLettersBtn').onclick = function() {
+    let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
+    if (myLetters.length === 0) {
+      alert('你还没写过信哦～');
+      return;
+    }
+    let msg = myLetters.map(l => {
+      let d = new Date(l.date);
+      return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}：\n${l.content}`;
+    }).join('\n\n——————\n\n');
+    alert(msg);
   };
 
-  // 页面初始加载时
-  updateBird("hasMail");
-};
+  // ————————————心情伪AI————————————
+  const aiReplies = {
+    开心: [
+      "茶房送了你喜欢的甜点来。和以前一样。",
+      "后园那株晚桂开了，香气渗进窗缝。你若在，大概会揪一簇夹在账本里。",
+      "嗯。继续保持。"
+    ],
+    想他: [
+      "刚批完的军报空白处洇了滴墨。",
+      "明日让人送些爱吃的糕点去，你总在想念时吃这个。",
+      "嗯。渝州今晚有月亮。"
+    ],
+    难过: [
+      "让厨房蒸了些你爱吃的甜点，你常看的树开了小花，后院的猫生了崽，有只纯白的，眼珠像琉璃。要来看么……我带去给你看好不好？"
+    ],
+    期待: [
+      "嗯。我也期待，期待与你重逢。"
+    ],
+    幸福: [
+      "茶房试着做了酒酿圆子，桂花撒得有些多，浮在碗沿像你描的眉。",
+      "西厢的留声机修好了，放的是你常哼的那首。",
+      "天晴，晒被子该收得早些。",
+      "一切安好，想着你，我便也是幸福的。"
+    ]
+  };
+  document.querySelectorAll('.mood-btn').forEach(btn => {
+    btn.onclick = function() {
+      document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mood = btn.dataset.mood;
+      const replies = aiReplies[mood] || ["嗯。"];
+      const reply = replies[Math.floor(Math.random() * replies.length)];
+      document.getElementById('moodResult').innerText = reply;
+    };
+  });
 
-document.getElementById('showMyLettersBtn').onclick = function() {
-  let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
-  if (myLetters.length === 0) {
-    alert('你还没写过信哦～');
-    return;
-  }
-  let msg = myLetters.map(l => {
-    let d = new Date(l.date);
-    return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}：\n${l.content}`;
-  }).join('\n\n——————\n\n');
-  alert(msg);
-};
-
-const festivals = [
-  {
-    date: "8月7日",
-    title: "立秋",
-    content: `今日立秋，晨起时风里已带了些许凉意。府里的老管事照例在檐下挂了艾草，说是祛暑气，其实暑热早散了。记得你总嫌艾草味道太冲，经过时便走快两步，衣角带起的风能掀动账册的纸页。
+  // ————————————节气日记弹窗————————————
+  const festivals = [
+    {
+      date: "8月7日",
+      title: "立秋",
+      content: `今日立秋，晨起时风里已带了些许凉意。府里的老管事照例在檐下挂了艾草，说是祛暑气，其实暑热早散了。记得你总嫌艾草味道太冲，经过时便走快两步，衣角带起的风能掀动账册的纸页。
 午间路过城隍庙，见人排队买秋梨膏。想起你入秋容易咳，便让副官去订了二十罐。装罐的伙计多嘴，问是不是给内宅太太的，没答，他倒自己笑起来，往箱子里多塞了两把甘草糖。
 傍晚在书房看公文，窗外忽然落了场急雨。你栽的那盆文竹还搁在窗台上，怕淋坏，起身去关窗时，发现雨已经停了。
 今年暑天短。
 你那边也该添衣了。`
+    }
+    // 后续节气直接加在这里
+  ];
+  function getTodayStr() {
+    const d = new Date();
+    return `${d.getMonth()+1}月${d.getDate()}日`;
   }
-  // 你随便加别的节日都可以
-];
-
-function getTodayStr() {
-  const d = new Date();
-  return `${d.getMonth()+1}月${d.getDate()}日`;
-}
-
-function showFestivalModal(festival) {
-  // 检查今天是否“今日不再弹”
-  if(localStorage.getItem("festivalClosed_" + festival.date)) return;
-  // 如果已经有弹窗就不再生成（防止重复）
-  if(document.getElementById("festival-modal")) return;
-
-  // 弹窗html
-  const modal = document.createElement("div");
-  modal.id = "festival-modal";
-  modal.style.cssText = `
-    position: fixed; left: 0; top: 0; right: 0; bottom: 0; 
-    background: rgba(0,0,0,0.4); display: flex; 
-    align-items: center; justify-content: center; z-index: 9999;
-  `;
-  modal.innerHTML = `
-    <div style="background: #fff; border-radius: 12px; max-width: 90vw; width: 340px; padding: 28px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); position:relative;">
-      <div style="font-size: 22px; font-weight: bold; text-align: center; color:#e2774b; margin-bottom:12px;">今日${festival.title}</div>
-      <div style="font-size: 15px; color: #444; white-space: pre-line; margin-bottom:22px;">${festival.content}</div>
-      <div style="display:flex; justify-content: space-between;">
-        <button id="close-festival-modal" style="flex:1; background:#f2f2f2; border:none; border-radius:7px; padding:7px 0; margin-right:8px; font-size:15px;">关闭</button>
-        <button id="festival-no-more-today" style="flex:1; background:#e6b065; color:white; border:none; border-radius:7px; padding:7px 0; font-size:15px;">今日不再提醒</button>
+  function showFestivalModal(festival) {
+    if(localStorage.getItem("festivalClosed_" + festival.date)) return;
+    if(document.getElementById("festival-modal")) return;
+    const modal = document.createElement("div");
+    modal.id = "festival-modal";
+    modal.style.cssText = `
+      position: fixed; left: 0; top: 0; right: 0; bottom: 0; 
+      background: rgba(0,0,0,0.4); display: flex; 
+      align-items: center; justify-content: center; z-index: 9999;
+    `;
+    modal.innerHTML = `
+      <div style="background: #fff; border-radius: 12px; max-width: 90vw; width: 340px; padding: 28px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); position:relative;">
+        <div style="font-size: 22px; font-weight: bold; text-align: center; color:#e2774b; margin-bottom:12px;">今日${festival.title}</div>
+        <div style="font-size: 15px; color: #444; white-space: pre-line; margin-bottom:22px;">${festival.content}</div>
+        <div style="display:flex; justify-content: space-between;">
+          <button id="close-festival-modal" style="flex:1; background:#f2f2f2; border:none; border-radius:7px; padding:7px 0; margin-right:8px; font-size:15px;">关闭</button>
+          <button id="festival-no-more-today" style="flex:1; background:#e6b065; color:white; border:none; border-radius:7px; padding:7px 0; font-size:15px;">今日不再提醒</button>
+        </div>
       </div>
-    </div>
-  `;
-  document.body.appendChild(modal);
-
-  // 绑定事件
-  document.getElementById("close-festival-modal").onclick = () => {
-    document.body.removeChild(modal);
-  };
-  document.getElementById("festival-no-more-today").onclick = () => {
-    localStorage.setItem("festivalClosed_" + festival.date, "1");
-    document.body.removeChild(modal);
-  };
-}
-
-window.addEventListener('DOMContentLoaded', function() {
+    `;
+    document.body.appendChild(modal);
+    document.getElementById("close-festival-modal").onclick = () => {
+      document.body.removeChild(modal);
+    };
+    document.getElementById("festival-no-more-today").onclick = () => {
+      localStorage.setItem("festivalClosed_" + festival.date, "1");
+      document.body.removeChild(modal);
+    };
+  }
+  // 页面初始时检查是否有节气弹窗
   const today = getTodayStr();
   const todayFestival = festivals.find(f => f.date === today);
   if(todayFestival){
     showFestivalModal(todayFestival);
   }
-  // 下面是你自己原本的onload逻辑
-});
 
-// festival-zone.html 或在你主页加个列表，自己forEach渲染
-festivals.forEach(f => {
-  // 自己插入到页面里
-  // f.title, f.date, f.content
-});
-
-const aiReplies = {
-  开心: [
-    "茶房送了你喜欢的甜点来。和以前一样。",
-    "后园那株晚桂开了，香气渗进窗缝。你若在，大概会揪一簇夹在账本里。",
-    "嗯。继续保持。"
-  ],
-  想你: [
-    "刚批完的军报空白处洇了滴墨。",
-    "明日让人送些爱吃的糕点去，你总在想念时吃这个。",
-    "嗯。渝州今晚有月亮。"
-  ],
-  难过: [
-    "让厨房蒸了些你爱吃的甜点，你常看的树开了小花，后院的猫生了崽，有只纯白的，眼珠像琉璃。 要来看么….我带去给你看好不好？",
-  ],
-  期待: [
-    "嗯。我也期待，期待与你重逢。"
-  ],
-  幸福: [
-    "茶房试着做了酒酿圆子，桂花撒得有些多，浮在碗沿像你描的眉。",
-    "西厢的留声机修好了，放的是你常哼的那首。",
-    "天晴，晒被子该收得早些。",
-    "一切安好，想着你，我便也是幸福的。"
-  ]
+  // 初始小鸟
+  updateBird("hasMail");
 };
-
-document.querySelectorAll('.mood-btn').forEach(btn => {
-  btn.onclick = function() {
-    const mood = btn.dataset.mood;
-    const replies = aiReplies[mood] || ["嗯。"];
-    const reply = replies[Math.floor(Math.random() * replies.length)];
-    document.getElementById('moodResult').innerText = reply;
-  };
-});
-
-<script src="script.js"></script>
+  
