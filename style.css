@@ -6,11 +6,12 @@ body {
 }
 .mailbox-container {
   background: #fff3fa;
-  max-width: 400px;
-  margin: 50px auto 0 auto;
+  max-width: 500px;        /* 建议500-700都行，看你喜好 */
+  width: 90vw;             /* 90%视口宽度，手机上更宽敞 */
+  margin: 30px auto 0 auto;
   border-radius: 24px;
-  box-shadow: 0 6px 30px 0 rgba(144,89,147,.1);
-  padding: 22px 22px 38px 22px;
+  box-shadow: 0 6px 30px 0 rgba(144,89,193,0.09);
+  padding: 22px 16px 38px 16px;  /* 两侧padding缩小点 */
   text-align: center;
 }
 .mailbox-img {
@@ -130,4 +131,19 @@ body {
   color: #b481c0;
   min-height: 22px;
   margin-top: 5px;
+}
+.mood-result {
+  background: #f9f5ef;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(233,188,130,0.08);
+  padding: 16px 14px;
+  color: #9a5a21;
+  font-size: 16px;
+  text-align: center;
+  margin-top: 18px;
+  min-height: 38px;
+  max-width: 340px;
+  margin-left: auto;
+  margin-right: auto;
+  transition: 0.2s;
 }
