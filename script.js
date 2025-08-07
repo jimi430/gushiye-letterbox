@@ -310,3 +310,4 @@ document.querySelectorAll('.mood-btn').forEach(btn => {
     document.getElementById('moodResult').innerText = reply;
   };
 });
+<script src="script.js"></script>
