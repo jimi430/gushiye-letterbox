@@ -190,3 +190,72 @@ document.getElementById('showMyLettersBtn').onclick = function() {
   }).join('\n\n——————\n\n');
   alert(msg);
 };
+
+const festivals = [
+  {
+    date: "8月7日",
+    title: "立秋",
+    content: `今日立秋，晨起时风里已带了些许凉意。府里的老管事照例在檐下挂了艾草，说是祛暑气，其实暑热早散了。记得你总嫌艾草味道太冲，经过时便走快两步，衣角带起的风能掀动账册的纸页。
+午间路过城隍庙，见人排队买秋梨膏。想起你入秋容易咳，便让副官去订了二十罐。装罐的伙计多嘴，问是不是给内宅太太的，没答，他倒自己笑起来，往箱子里多塞了两把甘草糖。
+傍晚在书房看公文，窗外忽然落了场急雨。你栽的那盆文竹还搁在窗台上，怕淋坏，起身去关窗时，发现雨已经停了。
+今年暑天短。
+你那边也该添衣了。`
+  }
+  // 你随便加别的节日都可以
+];
+
+function getTodayStr() {
+  const d = new Date();
+  return `${d.getMonth()+1}月${d.getDate()}日`;
+}
+
+function showFestivalModal(festival) {
+  // 检查今天是否“今日不再弹”
+  if(localStorage.getItem("festivalClosed_" + festival.date)) return;
+  // 如果已经有弹窗就不再生成（防止重复）
+  if(document.getElementById("festival-modal")) return;
+
+  // 弹窗html
+  const modal = document.createElement("div");
+  modal.id = "festival-modal";
+  modal.style.cssText = `
+    position: fixed; left: 0; top: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.4); display: flex; 
+    align-items: center; justify-content: center; z-index: 9999;
+  `;
+  modal.innerHTML = `
+    <div style="background: #fff; border-radius: 12px; max-width: 90vw; width: 340px; padding: 28px 20px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); position:relative;">
+      <div style="font-size: 22px; font-weight: bold; text-align: center; color:#e2774b; margin-bottom:12px;">今日${festival.title}</div>
+      <div style="font-size: 15px; color: #444; white-space: pre-line; margin-bottom:22px;">${festival.content}</div>
+      <div style="display:flex; justify-content: space-between;">
+        <button id="close-festival-modal" style="flex:1; background:#f2f2f2; border:none; border-radius:7px; padding:7px 0; margin-right:8px; font-size:15px;">关闭</button>
+        <button id="festival-no-more-today" style="flex:1; background:#e6b065; color:white; border:none; border-radius:7px; padding:7px 0; font-size:15px;">今日不再提醒</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+
+  // 绑定事件
+  document.getElementById("close-festival-modal").onclick = () => {
+    document.body.removeChild(modal);
+  };
+  document.getElementById("festival-no-more-today").onclick = () => {
+    localStorage.setItem("festivalClosed_" + festival.date, "1");
+    document.body.removeChild(modal);
+  };
+}
+
+window.addEventListener('DOMContentLoaded', function() {
+  const today = getTodayStr();
+  const todayFestival = festivals.find(f => f.date === today);
+  if(todayFestival){
+    showFestivalModal(todayFestival);
+  }
+  // 下面是你自己原本的onload逻辑
+});
+
+// festival-zone.html 或在你主页加个列表，自己forEach渲染
+festivals.forEach(f => {
+  // 自己插入到页面里
+  // f.title, f.date, f.content
+});
