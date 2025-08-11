@@ -146,19 +146,40 @@ window.onload = function() {
     updateBird("hasMail");
     document.getElementById("moodArea").style.display = "none";
   };
-  document.getElementById("submitLetterBtn").onclick = function() {
-    const val = document.getElementById("myLetter").value.trim();
-    if (!val) {
-      document.getElementById("submitResult").innerText = "信纸还是空的哦～写点什么给顾时夜吧！";
-      return;
-    }
-    document.getElementById("submitResult").innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
-    document.getElementById("myLetter").value = "";
-    // 保存到本地
+  document.getElementById("submitLetterBtn").onclick = async function () {
+  const val = document.getElementById("myLetter").value.trim();
+  const submitTip = document.getElementById("submitResult");
+  const replyBox  = document.getElementById("moodResult"); // 用它展示回信
+
+  if (!val) {
+    submitTip.innerText = "信纸还是空的哦～写点什么给顾时夜吧！";
+    return;
+  }
+
+  // 先本地保存
+  try {
     let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
     myLetters.push({ date: new Date().toISOString(), content: val });
     localStorage.setItem('myLetters', JSON.stringify(myLetters));
-  };
+  } catch (e) {
+    console.error('本地保存失败：', e);
+  }
+
+  // 清空输入 & 投递提示
+  document.getElementById("myLetter").value = "";
+  submitTip.innerText = "信件已投递，顾时夜一定会偷偷读到你的心事。";
+
+  // 调接口要回信
+  if (replyBox) replyBox.textContent = "顾时夜正在蘸墨回信…";
+  try {
+    const reply = await askGushiye(val);
+    if (replyBox) replyBox.textContent = reply;
+    else alert("顾时夜回信：\n\n" + reply);
+  } catch (err) {
+    console.error(err);
+    if (replyBox) replyBox.textContent = "抱歉，回信失败啦（稍后再试）";
+  }
+};
   document.getElementById('showMyLettersBtn').onclick = function() {
     let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
     if (myLetters.length === 0) {
@@ -181,10 +202,6 @@ async function askGushiye(text) {
   if (!res.ok) throw new Error(data.error || '网络错误');
   return data.reply;
 }
-
-const aiBtn = document.getElementById('aiReplyBtn');
-if (aiBtn) {
-  aiBtn.onclick = async function () {
     const input = document.getElementById('myLetter');
     const val = (input?.value || '').trim();
     if (!val) {
