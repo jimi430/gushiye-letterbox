@@ -1,3 +1,9 @@
+console.log('script loaded');
+window.addEventListener('error', e => { 
+  const box = document.getElementById('submitResult') || document.body;
+  if (box) box.innerText = 'JS错误：' + e.message;
+});
+
 window.onload = function() {
   // 顾时夜的日记
   const letters = [
