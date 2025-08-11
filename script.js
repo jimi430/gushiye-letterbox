@@ -172,7 +172,7 @@ window.onload = function() {
     alert(msg);
   };
 async function askGushiye(text) {
-  const res = await fetch('https://gushiye-letterbox.vercel.app/api/reply', {
+  const res = await fetch('https://gushiye-letterbox.vercel.app/api/reply', { ... })
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text })
