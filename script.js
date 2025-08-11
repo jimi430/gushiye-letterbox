@@ -147,9 +147,6 @@ window.onload = function() {
     document.getElementById("moodArea").style.display = "none";
   };
   document.getElementById("submitLetterBtn").onclick = function() {
-    requestAiReply(val).then(reply => {
-  alert('顾时夜回信：\n\n' + reply);
-});
     const val = document.getElementById("myLetter").value.trim();
     if (!val) {
       document.getElementById("submitResult").innerText = "信纸还是空的哦～写点什么给顾时夜吧！";
@@ -175,7 +172,7 @@ window.onload = function() {
     alert(msg);
   };
 async function askGushiye(text) {
-  const res = await fetch('/api/reply', {
+  const res = await fetch('https://gushiye-letterbox.vercel.app/api/reply', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ text })
