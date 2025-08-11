@@ -1,6 +1,3 @@
-啊啊啊Danni好乱啊，你直接告诉我这个script哪里有问题怎么改在哪里改行不行😭
-
-
 window.onload = function() {
   // 顾时夜的日记
   const letters = [
