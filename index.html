@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>顾时夜和你的邮箱</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,13 +14,18 @@
       alt="邮箱小鸟"
       class="mailbox-img"
     >
+
     <div class="btn-row">
       <button id="getMailBtn">收顾时夜的信</button>
       <button id="sendMailBtn">写信给顾时夜</button>
     </div>
+
+    <!-- 收信区 -->
     <div id="mailArea" style="display:none;">
       <div id="letterDate" class="letter-date"></div>
       <div id="letterContent" class="letter-content"></div>
+
+      <!-- 心情签到 -->
       <div id="moodArea" style="display:none;">
         <div class="mood-title">今天你的心情是：</div>
         <div class="mood-options">
@@ -32,18 +38,24 @@
         <div id="moodResult" class="mood-result"></div>
       </div>
     </div>
+
+    <!-- 写信区 -->
     <div id="sendArea" style="display:none;">
       <textarea id="myLetter" placeholder="写下你的小心事..."></textarea>
+
+      <!-- 只保留一个“投递”按钮和一个结果提示 -->
       <button id="submitLetterBtn">投递</button>
-      <button id="submitLetterBtn">投递</button>
-<!-- 新增“我的信箱”按钮 -->
+      <div id="submitResult" class="submit-result"></div>
+
+      <!-- 我的信箱 -->
       <button id="showMyLettersBtn">我的信箱</button>
-      <div id="submitResult" class="submit-result"></div>
-      <div id="submitResult" class="submit-result"></div>
+
+      <!-- 若想手动点“回信”，保留这两个；若投递后自动回信，可删掉这两个 -->
       <button id="aiReplyBtn">回信</button>
-<div id="aiReplyResult" class="mood-result"></div>
+      <div id="aiReplyResult" class="mood-result"></div>
     </div>
   </div>
+
   <script src="script.js"></script>
 </body>
 </html>
