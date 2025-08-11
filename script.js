@@ -174,7 +174,37 @@ window.onload = function() {
     }).join('\n\n——————\n\n');
     alert(msg);
   };
+async function askGushiye(text) {
+  const res = await fetch('/api/reply', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ text })
+  });
+  const data = await res.json();
+  if (!res.ok) throw new Error(data.error || '网络错误');
+  return data.reply;
+}
 
+const aiBtn = document.getElementById('aiReplyBtn');
+if (aiBtn) {
+  aiBtn.onclick = async function () {
+    const input = document.getElementById('myLetter');
+    const val = (input?.value || '').trim();
+    if (!val) {
+      alert('先写点内容再让顾时夜回信吧～');
+      return;
+    }
+    const box = document.getElementById('aiReplyResult') || document.getElementById('moodResult');
+    box.textContent = '顾时夜正在蘸墨回信…';
+    try {
+      const reply = await askGushiye(val);
+      box.textContent = reply;
+    } catch (e) {
+      box.textContent = '抱歉，回信失败啦（稍后再试）';
+      console.error(e);
+    }
+  };
+}
   // ————————————心情伪AI————————————
   const aiReplies = {
     开心: [
