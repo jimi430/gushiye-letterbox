@@ -1,10 +1,18 @@
 // api/reply.js
 export default async function handler(req, res) {
-  // CORS
-  const allow = process.env.ALLOW_ORIGIN || '*';
-  res.setHeader('Access-Control-Allow-Origin', allow);
-  res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+ // CORS
+const allowList = (process.env.ALLOW_ORIGIN || '*')
+  .split(',')
+  .map(s => s.trim())
+  .filter(Boolean);
+
+const origin = req.headers.origin || '';
+const can = allowList.includes('*') || allowList.includes(origin);
+
+res.setHeader('Vary', 'Origin'); // 让 CDN 按 Origin 区分缓存
+res.setHeader('Access-Control-Allow-Origin', can ? origin : allowList[0] || '*');
+res.setHeader('Access-Control-Allow-Methods', 'POST,OPTIONS');
+res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
 
   if (req.method === 'OPTIONS') return res.status(204).end();
   if (req.method !== 'POST') {
