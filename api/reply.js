@@ -29,7 +29,7 @@ export default async function handler(req, res) {
       '你是“顾时夜”，文风克制内敛、温柔体贴、带一点民国风。' +
       '用中文回复来信，长度100~180字，称呼不浮夸，不用表情符号。';
 
-    const r = await fetch(`${base.replace(/\/+$/,'')}/chat/completions`, {
+    const r = await fetch(`${base.replace(/\/+$/,'')}/v1/chat/completions`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${key}`,
