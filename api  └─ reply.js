@@ -1,113 +1,61 @@
-// api/reply.js
-// Vercel Edge Function：代理到 DeepSeek (OpenAI 兼容) 做“顾时夜回信”
-
-export const config = { runtime: 'edge' };
-
-const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || '*';           // 生产建议填你的域名
-const API_KEY      = process.env.LLM_API_KEY;                    // DeepSeek 的 API Key
-const BASE_URL     = process.env.LLM_BASE_URL || 'https://api.deepseek.com';
-const MODEL        = process.env.LLM_MODEL    || 'deepseek-chat';
-
-function corsHeaders() {
-  return {
-    'Access-Control-Allow-Origin': ALLOW_ORIGIN,
-    'Access-Control-Allow-Methods': 'POST,OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type,Authorization',
-    'Content-Type': 'application/json; charset=utf-8',
-  };
-}
-
-export default async function handler(req) {
-  // 预检
-  if (req.method === 'OPTIONS') {
-    return new Response(null, { status: 204, headers: corsHeaders() });
+// /api/reply.js
+export default async function handler(req, res) {
+  // CORS（允许从你的网站调用）
+  const allowList = (process.env.ALLOW_ORIGIN || "").split(",").map(s => s.trim()).filter(Boolean);
+  const origin = req.headers.origin || "";
+  const allow = allowList.length === 0 || allowList.includes(origin);
+  if (allow) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
   }
-  if (req.method !== 'POST') {
-    return new Response(JSON.stringify({ error: 'Method Not Allowed' }), {
-      status: 405,
-      headers: corsHeaders(),
-    });
-  }
-  if (!API_KEY) {
-    return new Response(JSON.stringify({ error: 'Missing API key' }), {
-      status: 500,
-      headers: corsHeaders(),
-    });
-  }
+  res.setHeader("Access-Control-Allow-Methods", "POST,OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
-  let payload;
-  try {
-    payload = await req.json();
-  } catch {
-    return new Response(JSON.stringify({ error: 'Invalid JSON' }), {
-      status: 400,
-      headers: corsHeaders(),
-    });
-  }
-
-  const letter = (payload.letter || '').toString().slice(0, 1200); // 防滥用，截断
-  const mood   = (payload.mood   || '').toString().slice(0, 20);
-
-  if (!letter) {
-    return new Response(JSON.stringify({ error: 'letter is required' }), {
-      status: 400,
-      headers: corsHeaders(),
-    });
-  }
-
-  // 顾时夜语气设定（系统提示）
-  const systemPrompt = `
-你是“顾时夜”，民国氛围的温柔寡言人设。写给对方的回信需：
-- 口吻沉静内敛、体贴、少用现代词汇与网络语
-- 字数 80~140 字为宜
-- 可以微妙地回应对方的心情（若提供：${mood || '未知'}），但不要直接说“我在模拟你的心情”
-- 使用第一人称，不要写出“系统提示/AI/模型”等字样
-- 结尾自然，不要过度煽情
-`;
-
-  // 用户来信（作为模型的“用户消息”）
-  const userPrompt = `对方给你的来信如下（请以“顾时夜”的身份写一段简短回信）：
----
-${letter}
----`;
+  if (req.method === "OPTIONS") return res.status(204).end();
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
-    const resp = await fetch(`${BASE_URL}/v1/chat/completions`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: MODEL,                  // deepseek-chat
-        messages: [
-          { role: 'system', content: systemPrompt.trim() },
-          { role: 'user',   content: userPrompt.trim()   },
-        ],
-        temperature: 0.8,
-        max_tokens: 220,
-      }),
-    });
-
-    if (!resp.ok) {
-      const errText = await resp.text();
-      return new Response(JSON.stringify({ error: 'LLM error', detail: errText }), {
-        status: 502,
-        headers: corsHeaders(),
-      });
+    const { userText } = req.body || {};
+    if (!userText || typeof userText !== "string") {
+      return res.status(400).json({ error: "Missing userText" });
     }
 
-    const data = await resp.json();
-    const reply = data?.choices?.[0]?.message?.content?.trim() || '……';
+    const base = process.env.LLM_BASE_URL || "https://api.deepseek.com";
+    const model = process.env.LLM_MODEL || "deepseek-chat";
+    const key = process.env.LLM_API_KEY;
+    if (!key) return res.status(500).json({ error: "Server not configured" });
 
-    return new Response(JSON.stringify({ reply }), {
-      status: 200,
-      headers: corsHeaders(),
+    // 角色设定：顾时夜
+    const system = `你是“顾时夜”，民国背景，性格寡言克制、温柔体贴。
+用中文回信，语气内敛含蓄、意象细腻（桂花、雨、留声机、马场等）。
+每次回复 50~120 字，像写短笺，不要跑题，不要重复用户原话。`;
+
+    // DeepSeek 的 chat completions
+    const r = await fetch(`${base.replace(/\/+$/,'')}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${key}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: `她（他）写给你的信：${userText}\n请回一段短笺。` }
+        ],
+        temperature: 0.8,
+        max_tokens: 180
+      })
     });
+
+    if (!r.ok) {
+      const txt = await r.text().catch(() => "");
+      return res.status(r.status).json({ error: "LLM error", detail: txt });
+    }
+
+    const data = await r.json();
+    const reply = data?.choices?.[0]?.message?.content?.trim() || "嗯。";
+    return res.status(200).json({ reply });
   } catch (e) {
-    return new Response(JSON.stringify({ error: 'Upstream failure', detail: String(e) }), {
-      status: 500,
-      headers: corsHeaders(),
-    });
+    return res.status(500).json({ error: e.message || "Server error" });
   }
 }
