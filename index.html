@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>顾时夜和你的邮箱</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -13,13 +14,17 @@
       alt="邮箱小鸟"
       class="mailbox-img"
     >
+
     <div class="btn-row">
       <button id="getMailBtn">收顾时夜的信</button>
       <button id="sendMailBtn">写信给顾时夜</button>
     </div>
+
+    <!-- 来信区域 -->
     <div id="mailArea" style="display:none;">
       <div id="letterDate" class="letter-date"></div>
       <div id="letterContent" class="letter-content"></div>
+
       <div id="moodArea" style="display:none;">
         <div class="mood-title">今天你的心情是：</div>
         <div class="mood-options">
@@ -32,18 +37,24 @@
         <div id="moodResult" class="mood-result"></div>
       </div>
     </div>
+
+    <!-- 写信区域 -->
     <div id="sendArea" style="display:none;">
       <textarea id="myLetter" placeholder="写下你的小心事..."></textarea>
-      <button id="submitLetterBtn">投递</button>
-      <button id="submitLetterBtn">投递</button>
-<!-- 新增“我的信箱”按钮 -->
-      <button id="showMyLettersBtn">我的信箱</button>
+      <div class="btn-row">
+        <button id="submitLetterBtn">投递</button>
+        <button id="showMyLettersBtn">我的信箱</button>
+      </div>
       <div id="submitResult" class="submit-result"></div>
-      <div id="submitResult" class="submit-result"></div>
-      <button id="aiReplyBtn">回信</button>
-<div id="aiReplyResult" class="mood-result"></div>
+
+      <div class="btn-row" style="margin-top:10px;">
+        <button id="aiReplyBtn">回信</button>
+      </div>
+      <div id="aiReplyResult" class="mood-result"></div>
     </div>
   </div>
-  <script src="script.js?v=5"></script>
+
+  <!-- 加 v= 号强制刷新缓存 -->
+  <script src="script.js?v=100" defer></script>
 </body>
 </html>
