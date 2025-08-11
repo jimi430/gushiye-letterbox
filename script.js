@@ -1,7 +1,25 @@
-window.onload = function() {
-  // 顾时夜的日记
-  const letters = [
-    `洛宁今日的雨从晨至暮，未曾停歇。闲倚窗边时，忽见楼下有一双人影，缓缓踱过积水的街。老先生手中伞面总偏向他身侧的老妻。雨水浸透了他半边肩膀，他却不觉，只顾低头与她絮语。雨痕模糊了视线，恍惚间，竟觉得那背影恰似你我。若此刻你在身旁，我们是否也会这样，任细雨湿了衣衫，仍共撑一把伞，慢慢走过这长长的雨季？会吧。会的。`,
+/* ============ 顶部：工具与后端调用 ============ */
+function $(id){ return document.getElementById(id); }
+function log(){ try{ console.log('[letterbox]', ...arguments); }catch(e){} }
+
+// 调用你在 Vercel 的接口（绝对地址！）
+async function askGushiye(text){
+  const url = 'https://gushiye-letterbox.vercel.app/api/reply';
+  const res = await fetch(url, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ text })
+  });
+  let data = {};
+  try{ data = await res.json(); }catch(e){}
+  if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
+  return data.reply;
+}
+
+/* ============ 这里放你的日记数组 letters =========== */
+/* 直接把你现有的 const letters = [ ... ] 原样放到这里 */
+const letters = [
+  `洛宁今日的雨从晨至暮，未曾停歇。闲倚窗边时，忽见楼下有一双人影，缓缓踱过积水的街。老先生手中伞面总偏向他身侧的老妻。雨水浸透了他半边肩膀，他却不觉，只顾低头与她絮语。雨痕模糊了视线，恍惚间，竟觉得那背影恰似你我。若此刻你在身旁，我们是否也会这样，任细雨湿了衣衫，仍共撑一把伞，慢慢走过这长长的雨季？会吧。会的。`,
     
     `今日军务冗繁，批阅至更深夜静方得归。 推门入室，唯见公馆空廊寂寂，不似夫人在时，总有一盏暖灯候我。夜阑人静，尤念卿卿。若夫人近日得闲暇，盼见回信，聊慰相思。`,
     
@@ -92,30 +110,7 @@ window.onload = function() {
 
     `今日与旧友小聚，谈了些陈年往事。众人散去后，独自一人回府。桌上还是你曾收拾的模样，动也未动。
 时常记起你说的话。你总嫌我话少，其实有些话，不知怎么开口。你不在，日子也就一日日过去，没什么大起大落。只是安静下来时，心里难免空落。`
-  ];
-
- /* ============ 顶部：工具与后端调用 ============ */
-function $(id){ return document.getElementById(id); }
-function log(){ try{ console.log('[letterbox]', ...arguments); }catch(e){} }
-
-// 调用你在 Vercel 的接口（绝对地址！）
-async function askGushiye(text){
-  const url = 'https://gushiye-letterbox.vercel.app/api/reply';
-  const res = await fetch(url, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ text })
-  });
-  let data = {};
-  try{ data = await res.json(); }catch(e){}
-  if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
-  return data.reply;
-}
-
-/* ============ 这里放你的日记数组 letters =========== */
-/* 直接把你现有的 const letters = [ ... ] 原样放到这里 */
-const letters = [
-  // ……（你的日记原样保留）
+  
 ];
 
 /* ============ 基础UI与逻辑 ============ */
