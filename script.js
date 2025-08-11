@@ -147,6 +147,9 @@ window.onload = function() {
     document.getElementById("moodArea").style.display = "none";
   };
   document.getElementById("submitLetterBtn").onclick = function() {
+    requestAiReply(val).then(reply => {
+  alert('顾时夜回信：\n\n' + reply);
+});
     const val = document.getElementById("myLetter").value.trim();
     if (!val) {
       document.getElementById("submitResult").innerText = "信纸还是空的哦～写点什么给顾时夜吧！";
