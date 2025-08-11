@@ -294,4 +294,3 @@ if (aiBtn) {
   // 初始小鸟
   updateBird("hasMail");
 };
-  
