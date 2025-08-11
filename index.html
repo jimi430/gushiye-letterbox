@@ -1,31 +1,44 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <title>顾时夜和你的邮箱</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>顾时夜和你的邮箱</title>
+<style>
+  body{background:#f7f8fa;font-family:'PingFang SC','微软雅黑',Arial,sans-serif;margin:0}
+  .mailbox-container{background:#fff3fa;max-width:540px;width:94vw;margin:24px auto;border-radius:24px;
+    box-shadow:0 6px 30px rgba(144,89,193,.09);padding:22px 12px 28px;text-align:center}
+  .mailbox-img{display:block;margin:0 auto 16px;max-width:380px;width:100%;height:auto;border-radius:18px;background:#fff7ff}
+  .btn-row{margin-bottom:14px}
+  .btn{background:#c4d3f7;color:#405a92;border:none;border-radius:12px;font-size:16px;padding:8px 20px;margin:0 6px;cursor:pointer}
+  .letter-date{color:#a97eab;font-size:16px;margin:14px 0 6px}
+  .letter-content{color:#3b253b;font-size:17px;text-align:left;line-height:1.7;white-space:pre-line;padding:11px 10px;border-radius:10px;background:#fff9ff;
+    box-shadow:0 1px 5px rgba(196,130,160,.09)}
+  .mood-title{font-size:17px;color:#496097;margin:16px 0 8px}
+  .mood-options{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-bottom:6px}
+  .mood-btn{background:#e6f0ff;border:none;border-radius:13px;font-size:15px;color:#5578c2;padding:6px 16px;cursor:pointer}
+  .mood-btn.active,.mood-btn:hover{background:#bad1f6;color:#283d62}
+  .mood-result{background:#f9f5ef;border-radius:12px;box-shadow:0 2px 8px rgba(233,188,130,.08);padding:14px;color:#9a5a21;font-size:16px;
+    text-align:center;min-height:38px;max-width:340px;margin:14px auto 0}
+  textarea{width:92%;min-height:70px;font-size:15px;border:1.5px solid #eee;border-radius:10px;padding:8px;margin:10px auto;background:#fcfbff;resize:vertical}
+  #submitLetterBtn{background:#f4d8f7;color:#8c2b67;border:none;border-radius:11px;font-size:15px;padding:8px 22px;cursor:pointer;margin-top:8px}
+  .submit-result{font-size:15px;color:#b481c0;min-height:22px;margin-top:6px}
+</style>
 </head>
 <body>
   <div class="mailbox-container">
-    <img
-      id="birdImg"
+    <img id="birdImg"
       src="https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg"
-      alt="邮箱小鸟"
-      class="mailbox-img"
-    >
-
+      alt="邮箱小鸟" class="mailbox-img" />
     <div class="btn-row">
-      <button id="getMailBtn">收顾时夜的信</button>
-      <button id="sendMailBtn">写信给顾时夜</button>
+      <button id="getMailBtn" class="btn">收顾时夜的信</button>
+      <button id="sendMailBtn" class="btn">写信给顾时夜</button>
     </div>
 
     <!-- 收信区 -->
     <div id="mailArea" style="display:none;">
       <div id="letterDate" class="letter-date"></div>
       <div id="letterContent" class="letter-content"></div>
-
-      <!-- 心情签到 -->
       <div id="moodArea" style="display:none;">
         <div class="mood-title">今天你的心情是：</div>
         <div class="mood-options">
@@ -42,20 +55,129 @@
     <!-- 写信区 -->
     <div id="sendArea" style="display:none;">
       <textarea id="myLetter" placeholder="写下你的小心事..."></textarea>
-
-      <!-- 只保留一个“投递”按钮和一个结果提示 -->
       <button id="submitLetterBtn">投递</button>
       <div id="submitResult" class="submit-result"></div>
 
-      <!-- 我的信箱 -->
-      <button id="showMyLettersBtn">我的信箱</button>
+      <button id="showMyLettersBtn" class="btn" style="margin-top:8px">我的信箱</button>
 
-      <!-- 若想手动点“回信”，保留这两个；若投递后自动回信，可删掉这两个 -->
-      <button id="aiReplyBtn">回信</button>
+      <!-- 手动回信（可留可删） -->
+      <button id="aiReplyBtn" class="btn" style="margin-top:8px">回信</button>
       <div id="aiReplyResult" class="mood-result"></div>
     </div>
   </div>
 
-  <script defer src="script.js"></script>
+<script>
+/* —— 自检：脚本必须进来 —— */
+console.log('JS loaded — single-file rescue');
+
+/* 工具 */
+const $ = id => document.getElementById(id);
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a;}
+function today(){const d=new Date();return `${d.getMonth()+1}月${d.getDate()}日`;}
+function setBird(hasMail){const img=$('birdImg'); if(img) img.src = hasMail
+  ? "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/f4614f1a7d046878cf90e4c38f1cc70a.jpeg"
+  : "https://raw.githubusercontent.com/jimi430/gushiye-letterbox/refs/heads/main/IMG_8396.jpeg";}
+
+/* 样例 letters（先放2条验证按钮；跑通后你把整批替换进来） */
+const letters = [
+`军务冗杂，夜半方归。案头一盏小灯未灭，像你等我时的眉眼。`,
+`午后小雨，路过旧巷，买了你爱吃的梨膏糖，封好放在抽屉。`
+];
+let pool = shuffle(letters), idx=0;
+function nextLetter(){ if(idx>=pool.length){ pool=shuffle(letters); idx=0 } return pool[idx++] }
+
+/* 调用后端（你的 vercel 地址） */
+async function askGushiye(text){
+  const url='https://gushiye-letterbox.vercel.app/api/reply';
+  const res=await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text})});
+  let data={}; try{ data=await res.json() }catch(e){}
+  if(!res.ok) throw new Error(data.error || ('HTTP '+res.status));
+  return data.reply;
+}
+
+/* 绑定 */
+document.addEventListener('DOMContentLoaded', ()=>{
+  const getBtn=$('getMailBtn'), sendBtn=$('sendMailBtn'), subBtn=$('submitLetterBtn'), myBtn=$('showMyLettersBtn'), aiBtn=$('aiReplyBtn');
+  const mail=$('mailArea'), send=$('sendArea'), moodArea=$('moodArea');
+  const dateBox=$('letterDate'), contBox=$('letterContent'), moodBox=$('moodResult');
+  const input=$('myLetter'), tip=$('submitResult'), aiBox=$('aiReplyResult');
+
+  if(!getBtn||!sendBtn||!subBtn||!mail||!send||!dateBox||!contBox||!input||!tip){ alert('缺少必要元素（id 重复或写错）。'); return; }
+
+  setBird(true);
+
+  getBtn.onclick=()=>{
+    const letter=nextLetter();
+    dateBox.innerText=`${today()} 顾时夜来信`;
+    contBox.innerText=letter;
+    mail.style.display='block'; send.style.display='none';
+    if(moodArea) moodArea.style.display='block';
+    if(moodBox) moodBox.innerText='';
+    document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+    setBird(false);
+  };
+
+  sendBtn.onclick=()=>{
+    mail.style.display='none'; send.style.display='block';
+    if(moodArea) moodArea.style.display='none';
+    tip.innerText=''; setBird(true);
+  };
+
+  subBtn.onclick=async ()=>{
+    const val=(input.value||'').trim();
+    if(!val){ tip.innerText='信纸还是空的哦～写点什么给顾时夜吧！'; return; }
+    try{
+      const arr=JSON.parse(localStorage.getItem('myLetters')||'[]');
+      arr.push({date:new Date().toISOString(), content:val});
+      localStorage.setItem('myLetters', JSON.stringify(arr));
+    }catch(e){ console.error('本地保存失败', e); }
+    input.value=''; tip.innerText='信件已投递，顾时夜一定会偷偷读到你的心事。';
+    if(moodBox) moodBox.textContent='顾时夜正在蘸墨回信…';
+    try{
+      const reply=await askGushiye(val);
+      (moodBox||aiBox).textContent=reply;
+    }catch(e){
+      console.error(e);
+      (moodBox||aiBox).textContent='抱歉，回信失败啦（稍后再试）';
+    }
+  };
+
+  if(myBtn){
+    myBtn.onclick=()=>{
+      const arr=JSON.parse(localStorage.getItem('myLetters')||'[]');
+      if(arr.length===0){ alert('你还没写过信哦～'); return; }
+      const msg=arr.map(l=>{const d=new Date(l.date); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}：\n${l.content}`;}).join('\n\n——————\n\n');
+      alert(msg);
+    };
+  }
+
+  if(aiBtn){
+    aiBtn.onclick=async ()=>{
+      const val=(input.value||'').trim();
+      if(!val){ alert('先写点内容再让顾时夜回信吧～'); return; }
+      aiBox.textContent='顾时夜正在蘸墨回信…';
+      try{ aiBox.textContent=await askGushiye(val); }
+      catch(e){ console.error(e); aiBox.textContent='抱歉，回信失败啦（稍后再试）'; }
+    };
+  }
+
+  const aiReplies={
+    '开心':["茶房送了你喜欢的甜点来。和以前一样。","后园那株晚桂开了，香气渗进窗缝。","嗯。继续保持。"],
+    '想他':["刚批完的军报空白处洇了滴墨。","明日让人送些爱吃的糕点去。","嗯。渝州今晚有月亮。"],
+    '难过':["让厨房蒸了些你爱吃的甜点。后院的猫生了崽，有只纯白的。要来看么？"],
+    '期待':["嗯。我也期待，期待与你重逢。"],
+    '幸福':["西厢的留声机修好了。","天晴，晒被子该收得早些。","一切安好，想着你，我便也是幸福的。"]
+  };
+  document.querySelectorAll('.mood-btn').forEach(btn=>{
+    btn.onclick=()=>{
+      document.querySelectorAll('.mood-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      const mood=btn.dataset.mood, arr=aiReplies[mood]||['嗯。'];
+      const one=arr[Math.floor(Math.random()*arr.length)];
+      if(moodBox) moodBox.innerText=one;
+    };
+  });
+});
+</script>
 </body>
 </html>
