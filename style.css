@@ -147,3 +147,23 @@ body {
   margin-right: auto;
   transition: 0.2s;
 }
+#saveAiReplyBtn {
+  background: #e7f7e9;
+  color: #2e7d32;
+  border: none;
+  border-radius: 11px;
+  font-size: 15px;
+  padding: 6px 22px;
+  cursor: pointer;
+  margin-right: 8px;
+}
+#saveAiReplyBtn:disabled { opacity: .5; cursor: not-allowed; }
+#showAiRepliesBtn {
+  background: #f9e6d2;
+  color: #8a4b1d;
+  border: none;
+  border-radius: 11px;
+  font-size: 15px;
+  padding: 6px 22px;
+  cursor: pointer;
+}
