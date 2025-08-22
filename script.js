@@ -185,22 +185,33 @@ async function askGushiye(text) {
 const aiBtn = document.getElementById('aiReplyBtn');
 if (aiBtn) {
   aiBtn.onclick = async function () {
-    const input = document.getElementById('myLetter');
-    const val = (input?.value || '').trim();
-    if (!val) {
-      alert('先写点内容再让顾时夜回信吧～');
-      return;
-    }
-    const box = document.getElementById('aiReplyResult') || document.getElementById('moodResult');
-    box.textContent = '顾时夜正在蘸墨回信…';
-    try {
-      const reply = await askGushiye(val);
-      box.textContent = reply;
-    } catch (e) {
-      box.textContent = '抱歉，回信失败啦（稍后再试）';
-      console.error(e);
-    }
-  };
+  const input = document.getElementById('myLetter');
+  const val = (input?.value || '').trim();
+  if (!val) {
+    alert('先写点内容再让顾时夜回信吧～');
+    return;
+  }
+
+  const box = document.getElementById('aiReplyResult') || document.getElementById('moodResult');
+  box.textContent = '顾时夜正在蘸墨回信…';
+
+  try {
+    const reply = await askGushiye(val);
+    box.textContent = reply;
+
+    // 🟢 保存用户写的信 + AI 回信
+    let myLetters = JSON.parse(localStorage.getItem('myLetters') || '[]');
+    myLetters.push({
+      date: new Date().toISOString(),
+      content: "【我写的】" + val + "\n【顾时夜回信】" + reply
+    });
+    localStorage.setItem('myLetters', JSON.stringify(myLetters));
+
+  } catch (e) {
+    box.textContent = '抱歉，回信失败啦（稍后再试）';
+    console.error(e);
+  }
+};
 }
   // ————————————心情伪AI————————————
   const aiReplies = {
