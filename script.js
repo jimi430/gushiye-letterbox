@@ -128,6 +128,8 @@ window.onload = function() {
   }
 
   // ————————————信件按钮————————————
+  // 记录最近一次 AI 回信内容
+let lastAiReply = "";
   document.getElementById("getMailBtn").onclick = function() {
     const letter = getRandomLetter();
     document.getElementById("letterDate").innerText = `${formatDate()} 顾时夜来信`;
@@ -212,6 +214,24 @@ if (aiBtn) {
     console.error(e);
   }
 };
+  // 查看回信夹
+const showBoxBtn = document.getElementById('showAiRepliesBtn');
+if (showBoxBtn) {
+  showBoxBtn.onclick = function () {
+    const box = JSON.parse(localStorage.getItem('aiReplies') || '[]');
+    if (!box.length) {
+      alert('回信夹还空着。先让顾时夜回一封吧。');
+      return;
+    }
+    const msg = box.map((item, idx) => {
+      const d = new Date(item.date);
+      const dateStr = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+      const related = item.related ? `（你的来信节选：${item.related.slice(0,24)}…）` : '';
+      return `【第${idx+1}封】${dateStr}\n${item.reply}\n${related}`;
+    }).join('\n\n——————\n\n');
+    alert(msg);
+  };
+}
 }
   // ————————————心情伪AI————————————
   const aiReplies = {
